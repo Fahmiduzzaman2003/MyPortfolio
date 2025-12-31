@@ -1,0 +1,12 @@
+-- Create experience table
+CREATE TABLE IF NOT EXISTS experience (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  company_name VARCHAR(255) NOT NULL,
+  position VARCHAR(255) NOT NULL,
+  duration VARCHAR(100) NOT NULL,
+  description TEXT,
+  company_logo_url VARCHAR(500),
+  display_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
