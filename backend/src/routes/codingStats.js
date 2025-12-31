@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
+const fetch = require('node-fetch');
 
 // Fetch LeetCode stats
 async function fetchLeetCodeStats(username) {
