@@ -20,7 +20,16 @@ const AdminCV = () => {
 
   const saveMutation = useMutation({
     mutationFn: async (url: string) => {
-      return profileApi.update({ ...profile, cv_url: url });
+      // Convert Google Drive view links to direct download links
+      let finalUrl = url;
+      if (url.includes('drive.google.com/file/d/')) {
+        const fileIdMatch = url.match(/\/file\/d\/([^\/]+)/);
+        if (fileIdMatch) {
+          finalUrl = `https://drive.google.com/uc?export=download&id=${fileIdMatch[1]}`;
+          toast.info("Converted to Google Drive download link");
+        }
+      }
+      return profileApi.update({ ...profile, cv_url: finalUrl });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });

@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const path = require('path');
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -12,8 +13,24 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET || ''
 });
 
-// Use memory storage instead of disk (files stay in memory temporarily)
-const storage = multer.memoryStorage();
+// Uploads directory
+const uploadDir = path.join(__dirname, '../../uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Configure storage - Use disk for PDFs, memory for images
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const memoryStorage = multer.memoryStorage();
 
 // File filter function
 const fileFilter = (req, file, cb) => {
@@ -49,8 +66,32 @@ const upload = multer({
   fileFilter
 });
 
+// Separate upload for PDFs (disk storage)
+const uploadPDF = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 1
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files allowed'), false);
+    }
+  }
+});
+
 // Upload single file (admin only)
-router.post('/', upload.single('file'), async (req, res) => {
+router.post('/', (req, res, next) => {
+  // Check if it's a PDF
+  const contentType = req.headers['content-type'];
+  if (contentType && contentType.includes('application/pdf')) {
+    uploadPDF.single('file')(req, res, next);
+  } else {
+    upload.single('file')(req, res, next);
+  }
+}, async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
