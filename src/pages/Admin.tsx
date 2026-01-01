@@ -65,8 +65,12 @@ const Admin = () => {
   }, [messages, messagesError]);
 
   useEffect(() => {
-    // No authentication required - admin panel is always accessible
-  }, []);
+    // Redirect to auth if not logged in or not admin
+    if (!loading && (!user || !isAdmin)) {
+      toast.error("Please login to access admin panel");
+      navigate("/auth");
+    }
+  }, [user, isAdmin, loading, navigate]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -82,7 +86,10 @@ const Admin = () => {
     );
   }
 
-  // No authentication check needed
+  // Redirect if not authenticated or not admin
+  if (!user || !isAdmin) {
+    return null; // Will redirect in useEffect
+  }
 
   const renderContent = () => {
     switch (activeSection) {
