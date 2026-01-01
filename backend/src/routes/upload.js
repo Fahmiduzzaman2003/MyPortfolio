@@ -79,11 +79,16 @@ router.post('/', upload.single('file'), async (req, res) => {
       uploadStream.end(req.file.buffer);
     });
 
-    // For PDFs, create a download URL with attachment flag
+    // For PDFs, generate proper Cloudinary URL with flags
     let downloadUrl = uploadResult.secure_url;
     if (isPDF) {
-      // Replace /upload/ with /upload/fl_attachment/ to force download
-      downloadUrl = uploadResult.secure_url.replace('/upload/', '/upload/fl_attachment/');
+      // Use Cloudinary's URL generator for proper raw file access
+      downloadUrl = cloudinary.url(uploadResult.public_id, {
+        resource_type: 'raw',
+        type: 'upload',
+        secure: true,
+        flags: 'attachment'
+      });
     }
 
     res.status(201).json({
