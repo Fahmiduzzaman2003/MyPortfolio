@@ -56,13 +56,18 @@ router.post('/', upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
+    // Determine resource type - PDFs need 'raw' type
+    const isPDF = req.file.mimetype === 'application/pdf';
+    const resourceType = isPDF ? 'raw' : 'auto';
+
     // Upload to Cloudinary
     const uploadResult = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: 'portfolio',
-          resource_type: 'auto',
-          public_id: `${Date.now()}-${Math.round(Math.random() * 1E9)}`
+          resource_type: resourceType,
+          public_id: `${Date.now()}-${Math.round(Math.random() * 1E9)}`,
+          format: isPDF ? 'pdf' : undefined
         },
         (error, result) => {
           if (error) reject(error);
