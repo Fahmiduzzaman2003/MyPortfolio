@@ -88,17 +88,21 @@ const EducationSection = () => {
                 {/* Content Card */}
                 <div className={`ml-12 md:ml-0 ${index % 2 === 0 ? "md:pr-12" : "md:pl-12 md:col-start-2"}`}>
                   <div className="bg-card border border-primary/40 rounded-2xl p-6 card-hover group shadow-[0_0_15px_rgba(20,184,166,0.3)]">
-                    <div className={`flex items-center gap-3 mb-4 ${index % 2 === 0 ? "md:justify-end" : ""}`}>
+                    <div className={`flex items-start gap-3 mb-4 ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}>
                       <motion.div 
-                        className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"
+                        className="w-12 h-12 flex-shrink-0 rounded-xl bg-primary/10 flex items-center justify-center"
                         whileHover={{ scale: 1.1, rotate: -5 }}
                         transition={{ type: "spring", stiffness: 300 }}
                       >
                         <GraduationCap className="w-6 h-6 text-primary" />
                       </motion.div>
-                      <div className={index % 2 === 0 ? "md:text-right" : ""}>
-                        <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{edu.degree}</h3>
-                        <p className="text-primary text-sm">{edu.institution}</p>
+                      <div className={`flex-1 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}>
+                        <h3 className="font-bold text-xl leading-tight mb-1.5 group-hover:text-primary transition-colors">
+                          {edu.degree}
+                        </h3>
+                        <p className="text-primary text-base font-medium leading-tight">
+                          {edu.institution}
+                        </p>
                       </div>
                     </div>
 
