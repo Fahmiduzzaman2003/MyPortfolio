@@ -82,18 +82,26 @@ async function fetchCodeforcesStats(username) {
 // Fetch CodeChef stats
 async function fetchCodeChefStats(username) {
   try {
-    // CodeChef's public API requires authentication
-    // Using web scraping approach as fallback
-    const response = await fetch(`https://www.codechef.com/users/${username}`);
-    const html = await response.text();
+    // Try CodeChef's unofficial API first
+    const response = await fetch(`https://codechef-api.vercel.app/${username}`);
     
-    // Extract problems solved from HTML
-    const match = html.match(/class="rating">(\d+)<\/span>/);
-    const problemsMatch = html.match(/Fully\s+Solved[^>]*>(\d+)</i);
+    if (!response.ok) {
+      throw new Error(`CodeChef API returned ${response.status}`);
+    }
     
-    if (problemsMatch) {
+    const data = await response.json();
+    
+    if (data.success && data.fullysolvedcount !== undefined) {
       return {
-        problems_solved: parseInt(problemsMatch[1]),
+        problems_solved: parseInt(data.fullysolvedcount),
+        success: true
+      };
+    }
+    
+    // Fallback: try to parse from different structure
+    if (data.fully_solved !== undefined) {
+      return {
+        problems_solved: parseInt(data.fully_solved),
         success: true
       };
     }
