@@ -81,7 +81,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight"
             >
               Hi, I'm{" "}
               <span className="text-gradient">{profile?.full_name || "Your Name"}</span>
@@ -91,9 +91,9 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="min-h-[2rem] sm:h-8 mb-6"
+              className="min-h-[2.5rem] sm:min-h-[3rem] md:min-h-[3.5rem] mb-4"
             >
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-mono bg-gradient-to-r from-teal-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent break-words font-semibold drop-shadow-[0_0_10px_rgba(20,184,166,0.5)]">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-mono bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent break-words font-extrabold tracking-wide drop-shadow-[0_0_20px_rgba(16,185,129,0.7)] leading-normal">
                 {">"} {roles[currentRole]}
                 <span className="animate-pulse">_</span>
               </p>
@@ -103,7 +103,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-foreground text-sm sm:text-base md:text-lg lg:text-xl max-w-lg lg:max-w-xl mb-8 leading-relaxed font-medium drop-shadow-sm"
+              className="text-foreground text-sm sm:text-base md:text-lg lg:text-xl max-w-lg lg:max-w-xl mb-6 leading-relaxed font-medium drop-shadow-sm"
             >
               {profile?.short_intro || "Passionate about building innovative solutions and exploring the frontiers of technology. Currently pursuing Computer Science with a focus on Machine Learning and Software Development."}
             </motion.p>
