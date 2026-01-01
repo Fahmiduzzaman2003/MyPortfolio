@@ -67,7 +67,9 @@ router.post('/', upload.single('file'), async (req, res) => {
           folder: 'portfolio',
           resource_type: resourceType,
           public_id: `${Date.now()}-${Math.round(Math.random() * 1E9)}`,
-          format: isPDF ? 'pdf' : undefined
+          format: isPDF ? 'pdf' : undefined,
+          access_mode: 'public', // Make PDFs publicly accessible
+          type: 'upload'
         },
         (error, result) => {
           if (error) reject(error);
