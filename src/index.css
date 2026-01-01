@@ -238,9 +238,9 @@
     @apply opacity-100 translate-y-0;
   }
 
-  /* Section Padding */
+  /* Section Padding - Mobile responsive */
   .section-padding {
-    @apply py-20 md:py-28 lg:py-32;
+    @apply py-12 sm:py-16 md:py-20 lg:py-24;
   }
 
   .container-custom {

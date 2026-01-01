@@ -81,7 +81,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight"
             >
               Hi, I'm{" "}
               <span className="text-gradient">{profile?.full_name || "Your Name"}</span>
@@ -91,9 +91,9 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="h-8 mb-6"
+              className="min-h-[2rem] sm:h-8 mb-6"
             >
-              <p className="text-lg md:text-xl font-mono text-primary">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-mono bg-gradient-to-r from-teal-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent break-words font-semibold drop-shadow-[0_0_10px_rgba(20,184,166,0.5)]">
                 {">"} {roles[currentRole]}
                 <span className="animate-pulse">_</span>
               </p>
@@ -103,7 +103,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
+              className="text-foreground text-sm sm:text-base md:text-lg lg:text-xl max-w-lg lg:max-w-xl mb-8 leading-relaxed font-medium drop-shadow-sm"
             >
               {profile?.short_intro || "Passionate about building innovative solutions and exploring the frontiers of technology. Currently pursuing Computer Science with a focus on Machine Learning and Software Development."}
             </motion.p>
@@ -112,7 +112,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-wrap gap-4 justify-center lg:justify-start"
+              className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start"
             >
               {profile?.cv_url ? (
                 <Button variant="hero" size="lg" asChild>
@@ -140,7 +140,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
-              className="flex gap-8 mt-12 justify-center lg:justify-start"
+              className="flex flex-wrap gap-6 sm:gap-8 mt-8 sm:mt-12 justify-center lg:justify-start"
             >
               {(profile?.stats && Array.isArray(profile.stats) && profile.stats.length > 0
                 ? profile.stats
@@ -150,9 +150,9 @@ const HeroSection = () => {
                     { value: "500+", label: "Problems Solved" },
                   ]
               ).map((stat: any, index: number) => (
-                <div key={index} className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-primary">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                <div key={index} className="text-center min-w-[80px]">
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
                 </div>
               ))}
             </motion.div>
@@ -170,7 +170,7 @@ const HeroSection = () => {
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl scale-110" />
               
               {/* Image Container */}
-              <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-primary/30 glow-teal">
+              <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-2 sm:border-4 border-primary/30 glow-teal">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
                 {!isLoading && profile?.profile_photo_url && (
                   <img

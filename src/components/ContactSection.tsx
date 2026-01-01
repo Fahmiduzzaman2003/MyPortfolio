@@ -110,7 +110,7 @@ const ContactSection = () => {
               }}
             />
             <h2 
-              className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 relative z-10"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 relative z-10"
               style={{
                 backgroundImage: "linear-gradient(90deg, #14b8a6, #06b6d4, #10b981)",
                 backgroundClip: "text",
@@ -126,7 +126,7 @@ const ContactSection = () => {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
           {/* Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -134,7 +134,7 @@ const ContactSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h3 className="text-xl font-semibold mb-6">Get in Touch</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Get in Touch</h3>
             
             <div className="grid sm:grid-cols-2 gap-4 mb-8">
               {isLoading ? (
@@ -158,7 +158,7 @@ const ContactSection = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
-                      className="flex items-center gap-4 p-4 bg-card border border-border rounded-xl transition-all hover:shadow-lg hover:scale-[1.02] hover:border-primary/50"
+                      className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-card border border-border rounded-xl transition-all hover:shadow-lg hover:scale-[1.02] hover:border-primary/50 min-h-[4.5rem]"
                     >
                       <div className="w-12 h-12 rounded-lg bg-white flex items-center justify-center p-2 shadow-sm">
                         {LogoComponent ? (
@@ -178,7 +178,7 @@ const ContactSection = () => {
             </div>
 
             {/* Location Info */}
-            <div className="bg-card border border-border rounded-2xl p-6">
+            <div className="bg-card border border-border rounded-2xl p-4 sm:p-6">
               {location && (
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -216,12 +216,12 @@ const ContactSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
+            <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 md:p-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                   <MessageSquare className="w-5 h-5 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold">Send a Message</h3>
+                <h3 className="text-lg sm:text-xl font-semibold">Send a Message</h3>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -235,7 +235,7 @@ const ContactSection = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
-                    className="w-full px-4 py-3 bg-secondary border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-3 sm:px-4 py-3 sm:py-3.5 bg-secondary border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base"
                     placeholder="Your name"
                   />
                 </div>
@@ -250,7 +250,7 @@ const ContactSection = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
-                    className="w-full px-4 py-3 bg-secondary border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-3 sm:px-4 py-3 sm:py-3.5 bg-secondary border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -265,7 +265,7 @@ const ContactSection = () => {
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     required
                     rows={5}
-                    className="w-full px-4 py-3 bg-secondary border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
+                    className="w-full px-3 sm:px-4 py-3 sm:py-3.5 bg-secondary border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none text-sm sm:text-base"
                     placeholder="Tell me about your project or inquiry..."
                   />
                 </div>
