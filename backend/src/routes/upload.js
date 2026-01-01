@@ -79,8 +79,15 @@ router.post('/', upload.single('file'), async (req, res) => {
       uploadStream.end(req.file.buffer);
     });
 
+    // For PDFs, create a download URL with attachment flag
+    let downloadUrl = uploadResult.secure_url;
+    if (isPDF) {
+      // Replace /upload/ with /upload/fl_attachment/ to force download
+      downloadUrl = uploadResult.secure_url.replace('/upload/', '/upload/fl_attachment/');
+    }
+
     res.status(201).json({
-      url: uploadResult.secure_url,
+      url: downloadUrl,
       filename: uploadResult.public_id,
       originalName: req.file.originalname,
       size: req.file.size,
