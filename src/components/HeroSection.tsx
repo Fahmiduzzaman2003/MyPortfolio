@@ -172,23 +172,12 @@ const HeroSection = () => {
               {/* Image Container */}
               <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-primary/30 glow-teal">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
-                {!isLoading && (
+                {!isLoading && profile?.profile_photo_url && (
                   <img
-                    key={profile?.profile_photo_url || "default"}
-                    src={
-                      profile?.profile_photo_url 
-                        ? `${profile.profile_photo_url}${profile.profile_photo_url.includes('?') ? '&' : '?'}t=${Date.now()}`
-                        : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
-                    }
+                    key={profile.profile_photo_url}
+                    src={`${profile.profile_photo_url}${profile.profile_photo_url.includes('?') ? '&' : '?'}t=${Date.now()}`}
                     alt="Profile"
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      console.error('Image failed to load:', target.src);
-                      if (!target.src.includes('unsplash.com')) {
-                        target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face";
-                      }
-                    }}
                   />
                 )}
               </div>
