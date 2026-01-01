@@ -82,48 +82,41 @@ async function fetchCodeforcesStats(username) {
 // Fetch CodeChef stats
 async function fetchCodeChefStats(username) {
   try {
-    // CodeChef scraping is unreliable, try multiple approaches
+    // CodeChef may block cloud servers, but try anyway
+    const response = await fetch(`https://www.codechef.com/users/${username}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
+    });
     
-    // Approach 1: Unofficial API
-    try {
-      const response = await fetch(`https://codechef-api.vercel.app/${username}`, {
-        timeout: 5000
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.fullysolvedcount !== undefined) {
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const html = await response.text();
+    
+    // Try multiple regex patterns to extract problems solved
+    const patterns = [
+      /<h3>(.+?)<\/h3>\s*<h5>Fully Solved<\/h5>/i,
+      /class="rating-number">(\d+)<\/span>\s*<div class="rating-star/,
+      /"problemsFullySolved"\s*:\s*(\d+)/,
+      /Fully Solved.*?(\d+)/i
+    ];
+    
+    for (const pattern of patterns) {
+      const match = html.match(pattern);
+      if (match && match[1]) {
+        const count = parseInt(match[1]);
+        if (!isNaN(count) && count >= 0) {
           return {
-            problems_solved: parseInt(data.fullysolvedcount),
+            problems_solved: count,
             success: true
           };
         }
       }
-    } catch (e) {
-      console.log('CodeChef unofficial API failed, trying alternative...');
     }
     
-    // Approach 2: Direct CodeChef API (requires no auth for basic stats)
-    try {
-      const response = await fetch(`https://www.codechef.com/api/user/${username}`, {
-        timeout: 5000
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.fully_solved !== undefined) {
-          return {
-            problems_solved: parseInt(data.fully_solved),
-            success: true
-          };
-        }
-      }
-    } catch (e) {
-      console.log('CodeChef direct API failed');
-    }
-    
-    // If all approaches fail, return null to use database fallback
-    throw new Error('All CodeChef API approaches failed - using database value');
+    throw new Error('Could not parse CodeChef stats from HTML');
   } catch (error) {
     console.error('CodeChef API error:', error.message);
     return { problems_solved: null, success: false, error: error.message };
