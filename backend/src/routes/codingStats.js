@@ -82,31 +82,48 @@ async function fetchCodeforcesStats(username) {
 // Fetch CodeChef stats
 async function fetchCodeChefStats(username) {
   try {
-    // Try CodeChef's unofficial API first
-    const response = await fetch(`https://codechef-api.vercel.app/${username}`);
+    // CodeChef scraping is unreliable, try multiple approaches
     
-    if (!response.ok) {
-      throw new Error(`CodeChef API returned ${response.status}`);
+    // Approach 1: Unofficial API
+    try {
+      const response = await fetch(`https://codechef-api.vercel.app/${username}`, {
+        timeout: 5000
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.fullysolvedcount !== undefined) {
+          return {
+            problems_solved: parseInt(data.fullysolvedcount),
+            success: true
+          };
+        }
+      }
+    } catch (e) {
+      console.log('CodeChef unofficial API failed, trying alternative...');
     }
     
-    const data = await response.json();
-    
-    if (data.success && data.fullysolvedcount !== undefined) {
-      return {
-        problems_solved: parseInt(data.fullysolvedcount),
-        success: true
-      };
+    // Approach 2: Direct CodeChef API (requires no auth for basic stats)
+    try {
+      const response = await fetch(`https://www.codechef.com/api/user/${username}`, {
+        timeout: 5000
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.fully_solved !== undefined) {
+          return {
+            problems_solved: parseInt(data.fully_solved),
+            success: true
+          };
+        }
+      }
+    } catch (e) {
+      console.log('CodeChef direct API failed');
     }
     
-    // Fallback: try to parse from different structure
-    if (data.fully_solved !== undefined) {
-      return {
-        problems_solved: parseInt(data.fully_solved),
-        success: true
-      };
-    }
-    
-    throw new Error('Could not parse CodeChef stats');
+    // If all approaches fail, return null to use database fallback
+    throw new Error('All CodeChef API approaches failed - using database value');
   } catch (error) {
     console.error('CodeChef API error:', error.message);
     return { problems_solved: null, success: false, error: error.message };
