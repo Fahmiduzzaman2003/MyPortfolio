@@ -39,8 +39,8 @@ const Navbar = () => {
     >
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-2 group">
+          {/* Logo - Centered on mobile, left on desktop */}
+          <a href="#" className="flex items-center gap-2 group md:flex-1">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
               <Terminal className="w-5 h-5 text-primary" />
             </div>

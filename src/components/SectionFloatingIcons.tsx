@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Database, Code, Cpu, Wifi, Target, Rocket, Radio, Wrench, Terminal, GitBranch, Globe, Zap } from "lucide-react";
 
-// Shared icon container styles with bright teal border
-const iconContainerClass = "absolute flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-xl border-2 border-cyan bg-background/80 backdrop-blur-sm shadow-lg shadow-cyan/20";
+// Shared icon container styles with bright teal border - mobile responsive sizing
+const iconContainerClass = "absolute flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-lg md:rounded-xl border border-cyan md:border-2 bg-background/80 backdrop-blur-sm shadow-md md:shadow-lg shadow-cyan/20";
 
 // Co-Curricular Activities floating icons
 export const CoCurricularFloatingIcons = () => {
@@ -38,7 +38,7 @@ export const CoCurricularFloatingIcons = () => {
             scale: { duration: 3 + index * 0.4, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-xl md:text-2xl">{item.icon}</span>
+          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
@@ -83,7 +83,7 @@ export const ProjectFloatingIcons = () => {
             rotate: { duration: 6 + index * 0.3, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-xl md:text-2xl">{item.icon}</span>
+          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
@@ -122,7 +122,7 @@ export const ResearchFloatingIcons = () => {
             x: { duration: 7 + index * 0.3, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-xl md:text-2xl">{item.icon}</span>
+          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
@@ -209,7 +209,7 @@ export const AchievementFloatingIcons = () => {
             rotate: { duration: 4 + index * 0.4, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-xl md:text-2xl">{item.icon}</span>
+          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
@@ -246,7 +246,7 @@ export const EducationFloatingIcons = () => {
             y: { duration: 4 + index * 0.6, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-xl md:text-2xl">{item.icon}</span>
+          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
