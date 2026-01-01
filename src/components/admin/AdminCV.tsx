@@ -29,14 +29,19 @@ const AdminCV = () => {
           toast.info("Converted to Google Drive download link");
         }
       }
-      return profileApi.update({ ...profile, cv_url: finalUrl });
+      
+      // Only send cv_url field to avoid issues with spreading entire profile
+      const response = await profileApi.update({ cv_url: finalUrl });
+      return { ...response, cv_url: finalUrl };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
-      toast.success("CV updated successfully!");
+      setCvUrl(data.cv_url); // Ensure state matches saved value
+      toast.success("CV saved successfully!");
     },
     onError: (error) => {
-      toast.error(`Error: ${error.message}`);
+      console.error('CV save error:', error);
+      toast.error(`Failed to save CV: ${error.message}`);
     },
   });
 
