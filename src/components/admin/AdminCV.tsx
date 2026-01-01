@@ -20,28 +20,52 @@ const AdminCV = () => {
 
   const saveMutation = useMutation({
     mutationFn: async (url: string) => {
+      if (!url.trim()) {
+        throw new Error("Please enter a valid URL");
+      }
+      
       // Convert Google Drive view links to direct download links
-      let finalUrl = url;
-      if (url.includes('drive.google.com/file/d/')) {
-        const fileIdMatch = url.match(/\/file\/d\/([^\/]+)/);
+      let finalUrl = url.trim();
+      if (finalUrl.includes('drive.google.com/file/d/')) {
+        const fileIdMatch = finalUrl.match(/\/file\/d\/([^\/]+)/);
         if (fileIdMatch) {
           finalUrl = `https://drive.google.com/uc?export=download&id=${fileIdMatch[1]}`;
           toast.info("Converted to Google Drive download link");
         }
       }
       
-      // Only send cv_url field to avoid issues with spreading entire profile
-      const response = await profileApi.update({ cv_url: finalUrl });
+      // Get current profile data first, then only update cv_url
+      const currentProfile = profile || {};
+      const updateData = {
+        full_name: currentProfile.full_name || '',
+        tagline: currentProfile.tagline || '',
+        short_intro: currentProfile.short_intro || '',
+        bio: currentProfile.bio || '',
+        location: currentProfile.location || '',
+        email: currentProfile.email || '',
+        phone: currentProfile.phone || '',
+        linkedin_url: currentProfile.linkedin_url || '',
+        github_url: currentProfile.github_url || '',
+        whatsapp_number: currentProfile.whatsapp_number || '',
+        profile_photo_url: currentProfile.profile_photo_url || '',
+        cv_url: finalUrl,
+        availability_text: currentProfile.availability_text || 'Open to work',
+        roles: currentProfile.roles || [],
+        stats: currentProfile.stats || []
+      };
+      
+      console.log('Saving CV URL:', finalUrl);
+      const response = await profileApi.update(updateData);
       return { ...response, cv_url: finalUrl };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
-      setCvUrl(data.cv_url); // Ensure state matches saved value
       toast.success("CV saved successfully!");
+      console.log('CV saved, URL:', data.cv_url);
     },
     onError: (error) => {
       console.error('CV save error:', error);
-      toast.error(`Failed to save CV: ${error.message}`);
+      toast.error(`Failed to save: ${error.message}`);
     },
   });
 
