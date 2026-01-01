@@ -109,38 +109,15 @@ async function fetchCodeChefStats(username) {
 router.get('/live', async (req, res) => {
   try {
     const [platforms] = await pool.query(
-      'SELECT * FROM coding_platforms WHERE username IS NOT NULL AND username != "" ORDER BY display_order ASC'
+      'SELECT * FROM coding_platforms ORDER BY display_order ASC'
     );
 
-    const liveStats = await Promise.all(
-      platforms.map(async (platform) => {
-        let liveData = { problems_solved: platform.problems_solved, success: false };
-
-        if (platform.username) {
-          const platformName = platform.name.toLowerCase();
-          
-          if (platformName.includes('leetcode')) {
-            liveData = await fetchLeetCodeStats(platform.username);
-          } else if (platformName.includes('codeforces')) {
-            liveData = await fetchCodeforcesStats(platform.username);
-          } else if (platformName.includes('codechef')) {
-            liveData = await fetchCodeChefStats(platform.username);
-          }
-        }
-
-        return {
-          ...platform,
-          problems_solved: liveData.problems_solved !== null ? liveData.problems_solved : platform.problems_solved,
-          is_live: liveData.success,
-          fallback_used: !liveData.success
-        };
-      })
-    );
-
-    res.json(liveStats);
+    // For now, return stored values to avoid API issues
+    // TODO: Re-enable live fetching once APIs are stable
+    res.json(platforms);
   } catch (error) {
     console.error('Get live coding stats error:', error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', message: error.message });
   }
 });
 
