@@ -10,7 +10,7 @@ const Footer = () => {
 
   return (
     <footer className="border-t border-border bg-card/50">
-      <div className="container-custom py-12">
+      <div className="container-custom py-8 sm:py-12 px-4 sm:px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <motion.a
@@ -32,16 +32,15 @@ const Footer = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="flex items-center gap-1 text-sm text-muted-foreground"
+            className="flex flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-1 text-xs sm:text-sm text-muted-foreground text-center"
           >
-            <span>© {currentYear}Fahmid.</span>
-            <span className="flex items-center gap-1">
-              Developed By Power of{" "}
+            <span className="whitespace-nowrap">© {currentYear} Fahmid.</span>
+            <span className="flex flex-wrap items-center justify-center gap-1">
+              <span className="whitespace-nowrap">Developed By Power of</span>{" "}
               <Coffee className="w-4 h-4 text-primary" />
-              {" "}and{" "}
+              {" "}<span>and</span>{" "}
+              <span className="font-mono text-primary whitespace-nowrap">{"</code>"}</span>
             </span>
-            <span className="font-mono text-primary">{"</code>"}</span>
-
           </motion.div>
 
           {/* Back to Top */}

@@ -51,21 +51,21 @@ const HeroSection = () => {
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         className="absolute top-1/4 left-[5%] sm:left-[8%] lg:left-[15%]"
       >
-        <Code2 className="w-6 h-6 sm:w-8 sm:h-8 text-primary/30" />
+        <Code2 className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-primary/30" />
       </motion.div>
       <motion.div
         animate={{ y: [10, -10, 10] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         className="absolute top-1/3 right-[5%] sm:right-[8%] lg:right-[10%]"
       >
-        <Cpu className="w-7 h-7 sm:w-10 sm:h-10 text-primary/20" />
+        <Cpu className="w-6 h-6 sm:w-7 sm:h-7 md:w-10 md:h-10 text-primary/20" />
       </motion.div>
       <motion.div
         animate={{ y: [-5, 15, -5] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         className="absolute bottom-1/3 left-[5%] sm:left-[8%] lg:left-[10%]"
       >
-        <Database className="w-5 h-5 sm:w-6 sm:h-6 text-primary/25" />
+        <Database className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-primary/25" />
       </motion.div>
 
       <div className="container-custom relative z-10 px-4 sm:px-6">
@@ -81,20 +81,20 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 leading-tight break-words"
             >
               Hi, I'm{" "}
-              <span className="text-gradient">{profile?.full_name || "Your Name"}</span>
+              <span className="text-gradient break-words">{profile?.full_name || "Your Name"}</span>
             </motion.h1>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="min-h-[2.5rem] sm:min-h-[3rem] md:min-h-[3.5rem] mb-4"
+              className="min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] mb-4"
             >
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-mono bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent break-words font-extrabold tracking-wide drop-shadow-[0_0_20px_rgba(16,185,129,0.7)] leading-normal">
-                {">"} {roles[currentRole]}
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-mono bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent break-words font-extrabold tracking-wide drop-shadow-[0_0_20px_rgba(16,185,129,0.7)] leading-normal">
+                {">"}  {roles[currentRole]}
                 <span className="animate-pulse">_</span>
               </p>
             </motion.div>
@@ -103,7 +103,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-foreground text-sm sm:text-base md:text-lg lg:text-xl max-w-lg lg:max-w-xl mb-6 leading-relaxed font-medium drop-shadow-sm"
+              className="text-foreground text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl max-w-lg lg:max-w-xl mb-5 sm:mb-6 leading-relaxed font-medium drop-shadow-sm"
             >
               {profile?.short_intro || "Passionate about building innovative solutions and exploring the frontiers of technology. Currently pursuing Computer Science with a focus on Machine Learning and Software Development."}
             </motion.p>
@@ -112,24 +112,24 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start max-w-full"
+              className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 md:gap-4 justify-center lg:justify-start max-w-full w-full"
             >
               {profile?.cv_url ? (
-                <Button variant="hero" size="lg" asChild>
+                <Button variant="hero" size="lg" className="w-full sm:w-auto text-sm sm:text-base" asChild>
                   <a href={profile.cv_url} target="_blank" rel="noopener noreferrer">
-                    <Download className="w-5 h-5" />
+                    <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                     Download CV
                   </a>
                 </Button>
               ) : (
-                <Button variant="hero" size="lg" disabled>
-                  <Download className="w-5 h-5" />
+                <Button variant="hero" size="lg" className="w-full sm:w-auto text-sm sm:text-base" disabled>
+                  <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                   Download CV
                 </Button>
               )}
-              <Button variant="heroOutline" size="lg" asChild>
+              <Button variant="heroOutline" size="lg" className="w-full sm:w-auto text-sm sm:text-base" asChild>
                 <a href="#contact">
-                  <Mail className="w-5 h-5" />
+                  <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
                   Contact Me
                 </a>
               </Button>
@@ -140,7 +140,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
-              className="flex flex-wrap gap-6 sm:gap-8 mt-8 sm:mt-12 justify-center lg:justify-start"
+              className="flex flex-wrap gap-4 sm:gap-6 md:gap-8 mt-6 sm:mt-8 md:mt-12 justify-center lg:justify-start"
             >
               {(profile?.stats && Array.isArray(profile.stats) && profile.stats.length > 0
                 ? profile.stats
