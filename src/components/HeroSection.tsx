@@ -45,31 +45,31 @@ const HeroSection = () => {
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-primary/5 rounded-full blur-2xl animate-pulse" style={{ animationDelay: "1s" }} />
       
-      {/* Floating Icons */}
+      {/* Floating Icons - Visible on all devices */}
       <motion.div
         animate={{ y: [-10, 10, -10] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-[15%] hidden lg:block"
+        className="absolute top-1/4 left-[5%] sm:left-[8%] lg:left-[15%]"
       >
-        <Code2 className="w-8 h-8 text-primary/30" />
+        <Code2 className="w-6 h-6 sm:w-8 sm:h-8 text-primary/30" />
       </motion.div>
       <motion.div
         animate={{ y: [10, -10, 10] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/3 right-[10%] hidden lg:block"
+        className="absolute top-1/3 right-[5%] sm:right-[8%] lg:right-[10%]"
       >
-        <Cpu className="w-10 h-10 text-primary/20" />
+        <Cpu className="w-7 h-7 sm:w-10 sm:h-10 text-primary/20" />
       </motion.div>
       <motion.div
         animate={{ y: [-5, 15, -5] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-1/3 left-[10%] hidden lg:block"
+        className="absolute bottom-1/3 left-[5%] sm:left-[8%] lg:left-[10%]"
       >
-        <Database className="w-6 h-6 text-primary/25" />
+        <Database className="w-5 h-5 sm:w-6 sm:h-6 text-primary/25" />
       </motion.div>
 
-      <div className="container-custom relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div className="container-custom relative z-10 px-4 sm:px-6">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           {/* Left Side - Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -112,7 +112,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start"
+              className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start max-w-full"
             >
               {profile?.cv_url ? (
                 <Button variant="hero" size="lg" asChild>

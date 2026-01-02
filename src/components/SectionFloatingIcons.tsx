@@ -1,20 +1,20 @@
 import { motion } from "framer-motion";
 import { Database, Code, Cpu, Wifi, Target, Rocket, Radio, Wrench, Terminal, GitBranch, Globe, Zap } from "lucide-react";
 
-// Shared icon container styles with bright teal border - mobile responsive sizing
-const iconContainerClass = "absolute flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-lg md:rounded-xl border border-cyan md:border-2 bg-background/80 backdrop-blur-sm shadow-md md:shadow-lg shadow-cyan/20";
+// Shared icon container styles with bright teal border - mobile responsive sizing with better mobile positioning
+const iconContainerClass = "absolute flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg md:rounded-xl border border-cyan md:border-2 bg-background/80 backdrop-blur-sm shadow-md md:shadow-lg shadow-cyan/20";
 
-// Co-Curricular Activities floating icons
+// Co-Curricular Activities floating icons - improved mobile positioning
 export const CoCurricularFloatingIcons = () => {
   const icons = [
-    { icon: "🤝", delay: 0, x: "8%", y: "12%" },     // Teamwork
-    { icon: "👑", delay: 0.2, x: "88%", y: "18%" },  // Leadership
-    { icon: "🎯", delay: 0.4, x: "6%", y: "35%" },   // Vision/Goals
-    { icon: "💬", delay: 0.6, x: "90%", y: "40%" },  // Communication
-    { icon: "🌟", delay: 0.3, x: "10%", y: "58%" },  // Excellence
-    { icon: "🎪", delay: 0.5, x: "86%", y: "62%" },  // Events
-    { icon: "🏛️", delay: 0.7, x: "8%", y: "78%" },   // Organization
-    { icon: "🎭", delay: 0.8, x: "88%", y: "82%" },  // Activities
+    { icon: "🤝", delay: 0, x: "4%", y: "12%", xMobile: "2%", xTablet: "6%" },     // Teamwork
+    { icon: "👑", delay: 0.2, x: "92%", y: "18%", xMobile: "94%", xTablet: "90%" },  // Leadership
+    { icon: "🎯", delay: 0.4, x: "3%", y: "35%", xMobile: "1%", xTablet: "4%" },   // Vision/Goals
+    { icon: "💬", delay: 0.6, x: "93%", y: "40%", xMobile: "95%", xTablet: "91%" },  // Communication
+    { icon: "🌟", delay: 0.3, x: "5%", y: "58%", xMobile: "2%", xTablet: "7%" },  // Excellence
+    { icon: "🎪", delay: 0.5, x: "90%", y: "62%", xMobile: "94%", xTablet: "88%" },  // Events
+    { icon: "🏛️", delay: 0.7, x: "4%", y: "78%", xMobile: "2%", xTablet: "6%" },   // Organization
+    { icon: "🎭", delay: 0.8, x: "92%", y: "82%", xMobile: "94%", xTablet: "90%" },  // Activities
   ];
 
   return (
@@ -23,7 +23,10 @@ export const CoCurricularFloatingIcons = () => {
         <motion.div
           key={index}
           className={iconContainerClass}
-          style={{ left: item.x, top: item.y }}
+          style={{ 
+            left: `min(max(${item.x}, 2%), 96%)`,
+            top: item.y 
+          }}
           initial={{ opacity: 0, scale: 0, rotate: -90 }}
           whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
           viewport={{ once: true }}
@@ -38,28 +41,28 @@ export const CoCurricularFloatingIcons = () => {
             scale: { duration: 3 + index * 0.4, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
+          <span className="text-sm sm:text-base md:text-lg lg:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
   );
 };
 
-// Project-related floating icons
+// Project-related floating icons - improved mobile positioning
 export const ProjectFloatingIcons = () => {
   const icons = [
-    { icon: "💻", delay: 0, x: "8%", y: "8%" },
-    { icon: "🚀", delay: 0.2, x: "88%", y: "10%" },
-    { icon: "⚡", delay: 0.4, x: "6%", y: "22%" },
-    { icon: "🔧", delay: 0.6, x: "90%", y: "25%" },
-    { icon: "📱", delay: 0.3, x: "10%", y: "36%" },
-    { icon: "🌐", delay: 0.5, x: "86%", y: "40%" },
-    { icon: "🛠️", delay: 0.7, x: "8%", y: "50%" },
-    { icon: "⚙️", delay: 0.8, x: "88%", y: "54%" },
-    { icon: "🎨", delay: 0.9, x: "6%", y: "64%" },
-    { icon: "💡", delay: 1.0, x: "90%", y: "68%" },
-    { icon: "🔌", delay: 1.1, x: "10%", y: "78%" },
-    { icon: "📊", delay: 1.2, x: "86%", y: "82%" },
+    { icon: "💻", delay: 0, x: "4%", y: "8%" },
+    { icon: "🚀", delay: 0.2, x: "92%", y: "10%" },
+    { icon: "⚡", delay: 0.4, x: "3%", y: "22%" },
+    { icon: "🔧", delay: 0.6, x: "93%", y: "25%" },
+    { icon: "📱", delay: 0.3, x: "5%", y: "36%" },
+    { icon: "🌐", delay: 0.5, x: "90%", y: "40%" },
+    { icon: "🛠️", delay: 0.7, x: "4%", y: "50%" },
+    { icon: "⚙️", delay: 0.8, x: "92%", y: "54%" },
+    { icon: "🎨", delay: 0.9, x: "3%", y: "64%" },
+    { icon: "💡", delay: 1.0, x: "93%", y: "68%" },
+    { icon: "🔌", delay: 1.1, x: "5%", y: "78%" },
+    { icon: "📊", delay: 1.2, x: "90%", y: "82%" },
   ];
 
   return (
@@ -68,7 +71,10 @@ export const ProjectFloatingIcons = () => {
         <motion.div
           key={index}
           className={iconContainerClass}
-          style={{ left: item.x, top: item.y }}
+          style={{ 
+            left: `min(max(${item.x}, 2%), 96%)`,
+            top: item.y 
+          }}
           initial={{ opacity: 0, scale: 0 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -83,22 +89,22 @@ export const ProjectFloatingIcons = () => {
             rotate: { duration: 6 + index * 0.3, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
+          <span className="text-sm sm:text-base md:text-lg lg:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
   );
 };
 
-// Research-related floating icons
+// Research-related floating icons - improved mobile positioning
 export const ResearchFloatingIcons = () => {
   const icons = [
-    { icon: "🔬", delay: 0, x: "6%", y: "35%" },
-    { icon: "📊", delay: 0.2, x: "88%", y: "25%" },
-    { icon: "🧬", delay: 0.4, x: "4%", y: "55%" },
-    { icon: "📈", delay: 0.6, x: "90%", y: "65%" },
-    { icon: "🧠", delay: 0.3, x: "8%", y: "75%" },
-    { icon: "💡", delay: 0.5, x: "86%", y: "85%" },
+    { icon: "🔬", delay: 0, x: "3%", y: "35%" },
+    { icon: "📊", delay: 0.2, x: "92%", y: "25%" },
+    { icon: "🧬", delay: 0.4, x: "2%", y: "55%" },
+    { icon: "📈", delay: 0.6, x: "93%", y: "65%" },
+    { icon: "🧠", delay: 0.3, x: "4%", y: "75%" },
+    { icon: "💡", delay: 0.5, x: "90%", y: "85%" },
   ];
 
   return (
@@ -107,7 +113,10 @@ export const ResearchFloatingIcons = () => {
         <motion.div
           key={index}
           className={iconContainerClass}
-          style={{ left: item.x, top: item.y }}
+          style={{ 
+            left: `min(max(${item.x}, 2%), 96%)`,
+            top: item.y 
+          }}
           initial={{ opacity: 0, scale: 0 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -122,24 +131,24 @@ export const ResearchFloatingIcons = () => {
             x: { duration: 7 + index * 0.3, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
+          <span className="text-sm sm:text-base md:text-lg lg:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
   );
 };
 
-// About section floating icons
+// About section floating icons - improved mobile positioning
 export const AboutFloatingIcons = () => {
   const icons = [
-    { Icon: Database, delay: 0, x: "8%", y: "20%" },
-    { Icon: Code, delay: 0.2, x: "90%", y: "15%" },
-    { Icon: Globe, delay: 0.4, x: "6%", y: "45%" },
-    { Icon: Zap, delay: 0.6, x: "92%", y: "50%" },
-    { Icon: Target, delay: 0.3, x: "10%", y: "70%" },
-    { Icon: Rocket, delay: 0.5, x: "88%", y: "75%" },
-    { Icon: Radio, delay: 0.7, x: "5%", y: "90%" },
-    { Icon: Cpu, delay: 0.8, x: "94%", y: "85%" },
+    { Icon: Database, delay: 0, x: "4%", y: "20%" },
+    { Icon: Code, delay: 0.2, x: "93%", y: "15%" },
+    { Icon: Globe, delay: 0.4, x: "3%", y: "45%" },
+    { Icon: Zap, delay: 0.6, x: "94%", y: "50%" },
+    { Icon: Target, delay: 0.3, x: "5%", y: "70%" },
+    { Icon: Rocket, delay: 0.5, x: "92%", y: "75%" },
+    { Icon: Radio, delay: 0.7, x: "2%", y: "90%" },
+    { Icon: Cpu, delay: 0.8, x: "95%", y: "85%" },
   ];
 
   return (
@@ -147,8 +156,11 @@ export const AboutFloatingIcons = () => {
       {icons.map((item, index) => (
         <motion.div
           key={index}
-          className="absolute flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-lg border border-cyan/30 bg-background/60 backdrop-blur-sm"
-          style={{ left: item.x, top: item.y }}
+          className="absolute flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg border border-cyan/30 bg-background/60 backdrop-blur-sm"
+          style={{ 
+            left: `min(max(${item.x}, 2%), 96%)`,
+            top: item.y 
+          }}
           initial={{ opacity: 0, scale: 0 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -164,28 +176,28 @@ export const AboutFloatingIcons = () => {
             ease: "easeInOut",
           }}
         >
-          <item.Icon className="w-5 h-5 md:w-6 md:h-6 text-cyan-400" />
+          <item.Icon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-cyan-400" />
         </motion.div>
       ))}
     </div>
   );
 };
 
-// Achievement-related floating icons
+// Achievement-related floating icons - improved mobile positioning
 export const AchievementFloatingIcons = () => {
   const icons = [
-    { icon: "🏆", delay: 0, x: "8%", y: "10%" },
-    { icon: "🎯", delay: 0.2, x: "88%", y: "12%" },
-    { icon: "⭐", delay: 0.4, x: "6%", y: "24%" },
-    { icon: "🎖️", delay: 0.6, x: "90%", y: "28%" },
-    { icon: "🏅", delay: 0.3, x: "10%", y: "38%" },
-    { icon: "✨", delay: 0.5, x: "86%", y: "42%" },
-    { icon: "🌟", delay: 0.7, x: "8%", y: "52%" },
-    { icon: "💫", delay: 0.8, x: "88%", y: "56%" },
-    { icon: "🎓", delay: 0.9, x: "6%", y: "66%" },
-    { icon: "📜", delay: 1.0, x: "90%", y: "70%" },
-    { icon: "🥇", delay: 1.1, x: "10%", y: "80%" },
-    { icon: "🔥", delay: 1.2, x: "86%", y: "84%" },
+    { icon: "🏆", delay: 0, x: "4%", y: "10%" },
+    { icon: "🎯", delay: 0.2, x: "92%", y: "12%" },
+    { icon: "⭐", delay: 0.4, x: "3%", y: "24%" },
+    { icon: "🎖️", delay: 0.6, x: "93%", y: "28%" },
+    { icon: "🏅", delay: 0.3, x: "5%", y: "38%" },
+    { icon: "✨", delay: 0.5, x: "90%", y: "42%" },
+    { icon: "🌟", delay: 0.7, x: "4%", y: "52%" },
+    { icon: "💫", delay: 0.8, x: "92%", y: "56%" },
+    { icon: "🎓", delay: 0.9, x: "3%", y: "66%" },
+    { icon: "📜", delay: 1.0, x: "93%", y: "70%" },
+    { icon: "🥇", delay: 1.1, x: "5%", y: "80%" },
+    { icon: "🔥", delay: 1.2, x: "90%", y: "84%" },
   ];
 
   return (
@@ -194,7 +206,10 @@ export const AchievementFloatingIcons = () => {
         <motion.div
           key={index}
           className={iconContainerClass}
-          style={{ left: item.x, top: item.y }}
+          style={{ 
+            left: `min(max(${item.x}, 2%), 96%)`,
+            top: item.y 
+          }}
           initial={{ opacity: 0, scale: 0, rotate: -180 }}
           whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
           viewport={{ once: true }}
@@ -209,22 +224,22 @@ export const AchievementFloatingIcons = () => {
             rotate: { duration: 4 + index * 0.4, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
+          <span className="text-sm sm:text-base md:text-lg lg:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
   );
 };
 
-// Education-related floating icons
+// Education-related floating icons - improved mobile positioning
 export const EducationFloatingIcons = () => {
   const icons = [
-    { icon: "📚", delay: 0, x: "7%", y: "15%" },
-    { icon: "🎓", delay: 0.2, x: "90%", y: "20%" },
-    { icon: "📖", delay: 0.4, x: "10%", y: "60%" },
-    { icon: "✏️", delay: 0.6, x: "88%", y: "65%" },
-    { icon: "🎯", delay: 0.3, x: "5%", y: "38%" },
-    { icon: "💫", delay: 0.5, x: "92%", y: "42%" },
+    { icon: "📚", delay: 0, x: "3%", y: "15%" },
+    { icon: "🎓", delay: 0.2, x: "93%", y: "20%" },
+    { icon: "📖", delay: 0.4, x: "5%", y: "60%" },
+    { icon: "✏️", delay: 0.6, x: "92%", y: "65%" },
+    { icon: "🎯", delay: 0.3, x: "2%", y: "38%" },
+    { icon: "💫", delay: 0.5, x: "94%", y: "42%" },
   ];
 
   return (
@@ -233,7 +248,10 @@ export const EducationFloatingIcons = () => {
         <motion.div
           key={index}
           className={iconContainerClass}
-          style={{ left: item.x, top: item.y }}
+          style={{ 
+            left: `min(max(${item.x}, 2%), 96%)`,
+            top: item.y 
+          }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -246,7 +264,7 @@ export const EducationFloatingIcons = () => {
             y: { duration: 4 + index * 0.6, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-base sm:text-lg md:text-2xl">{item.icon}</span>
+          <span className="text-sm sm:text-base md:text-lg lg:text-2xl">{item.icon}</span>
         </motion.div>
       ))}
     </div>
