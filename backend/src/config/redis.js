@@ -12,13 +12,16 @@ async function createRedisClient() {
 
   try {
     // Build Redis configuration
+    const redisUrl = process.env.REDIS_URL || `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}`;
+    const isSecure = redisUrl.startsWith('rediss://');
+    
     const redisConfig = {
-      url: process.env.REDIS_URL || `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}`,
-      password: process.env.REDIS_PASSWORD || undefined,
+      url: redisUrl,
       socket: {
-        connectTimeout: 5000,
-        // Enable TLS for Redis Cloud (rediss://)
-        tls: process.env.REDIS_URL?.startsWith('rediss://'),
+        connectTimeout: 10000,
+        // Enable TLS for Redis Cloud with proper settings
+        tls: isSecure,
+        rejectUnauthorized: false, // Required for Redis Cloud
         reconnectStrategy: (retries) => {
           if (retries > 3) {
             console.log('⚠️  Redis connection failed - disabling cache');
@@ -29,11 +32,6 @@ async function createRedisClient() {
         }
       }
     };
-
-    // Remove password if undefined
-    if (!redisConfig.password) {
-      delete redisConfig.password;
-    }
 
     const client = redis.createClient(redisConfig);
 
