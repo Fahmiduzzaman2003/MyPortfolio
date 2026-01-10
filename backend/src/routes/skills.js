@@ -1,10 +1,11 @@
 const express = require('express');
 const pool = require('../config/database');
+const { cacheMiddleware, del } = require('../utils/cache');
 
 const router = express.Router();
 
 // Get all skill categories with their skills (public)
-router.get('/categories', async (req, res) => {
+router.get('/categories', cacheMiddleware(600), async (req, res) => {
   try {
     const [categories] = await pool.query(
       'SELECT * FROM skill_categories ORDER BY display_order ASC, created_at DESC'
@@ -30,7 +31,7 @@ router.get('/categories', async (req, res) => {
 });
 
 // Get single skill category (public)
-router.get('/categories/:id', async (req, res) => {
+router.get('/categories/:id', cacheMiddleware(600), async (req, res) => {
   try {
     const { id } = req.params;
     const [categories] = await pool.query('SELECT * FROM skill_categories WHERE id = ?', [id]);
@@ -66,6 +67,10 @@ router.post('/categories', async (req, res) => {
     );
 
     const [newCategory] = await pool.query('SELECT * FROM skill_categories WHERE id = ?', [result.insertId]);
+    
+    // Clear skills cache
+    await del('api:/api/skills*');
+    
     res.status(201).json(newCategory[0]);
   } catch (error) {
     console.error('Create skill category error:', error);
@@ -93,6 +98,10 @@ router.put('/categories/:id', async (req, res) => {
     }
 
     const [updated] = await pool.query('SELECT * FROM skill_categories WHERE id = ?', [id]);
+    
+    // Clear skills cache
+    await del('api:/api/skills*');
+    
     res.json(updated[0]);
   } catch (error) {
     console.error('Update skill category error:', error);
@@ -113,6 +122,9 @@ router.delete('/categories/:id', async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Skill category not found' });
     }
+
+    // Clear skills cache
+    await del('api:/api/skills*');
 
     res.json({ message: 'Skill category and associated skills deleted successfully' });
   } catch (error) {
@@ -190,6 +202,9 @@ router.post('/', async (req, res) => {
       WHERE s.id = ?
     `, [result.insertId]);
 
+    // Clear skills cache
+    await del('api:/api/skills*');
+
     res.status(201).json(newSkill[0]);
   } catch (error) {
     console.error('Create skill error:', error);
@@ -233,6 +248,9 @@ router.put('/:id', async (req, res) => {
       WHERE s.id = ?
     `, [id]);
 
+    // Clear skills cache
+    await del('api:/api/skills*');
+
     res.json(updated[0]);
   } catch (error) {
     console.error('Update skill error:', error);
@@ -250,6 +268,9 @@ router.delete('/:id', async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Skill not found' });
     }
+
+    // Clear skills cache
+    await del('api:/api/skills*');
 
     res.json({ message: 'Skill deleted successfully' });
   } catch (error) {
