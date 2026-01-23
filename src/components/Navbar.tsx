@@ -31,20 +31,20 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full ${
         scrolled
           ? "bg-background/80 backdrop-blur-lg border-b border-border"
           : "bg-transparent"
       }`}
     >
       <div className="container-custom">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-16 md:h-20 w-full px-2 sm:px-0">
           {/* Logo - Centered on mobile, left on desktop */}
-          <a href="#" className="flex items-center gap-2 group md:flex-1">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-              <Terminal className="w-5 h-5 text-primary" />
+          <a href="#" className="flex items-center gap-2 group md:flex-1 flex-shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+              <Terminal className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
-            <span className="font-mono font-bold text-lg text-foreground">
+            <span className="font-mono font-bold text-base sm:text-lg text-foreground">
               {"<Fz/>"}
             </span>
           </a>

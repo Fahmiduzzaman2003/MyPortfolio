@@ -39,11 +39,11 @@ const HeroSection = () => {
   }, [roles.length]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden w-full">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-radial from-primary/5 via-transparent to-transparent" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-primary/5 rounded-full blur-2xl animate-pulse" style={{ animationDelay: "1s" }} />
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-64 sm:h-64 bg-primary/5 rounded-full blur-2xl animate-pulse" style={{ animationDelay: "1s" }} />
       
       {/* Floating Icons - Visible on all devices */}
       <motion.div
@@ -81,7 +81,8 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 leading-tight break-words"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 leading-tight break-words hyphens-auto"
+              style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}
             >
               Hi, I'm{" "}
               <span className="text-gradient break-words">{profile?.full_name || "Your Name"}</span>
@@ -91,9 +92,10 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] mb-4"
+              className="min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] mb-4 w-full"
             >
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-mono bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent break-words font-extrabold tracking-wide drop-shadow-[0_0_20px_rgba(16,185,129,0.7)] leading-normal">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-mono bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent break-words font-extrabold tracking-wide drop-shadow-[0_0_20px_rgba(16,185,129,0.7)] leading-normal"
+                 style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>
                 {">"}  {roles[currentRole]}
                 <span className="animate-pulse">_</span>
               </p>
@@ -103,7 +105,8 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-foreground text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl max-w-lg lg:max-w-xl mb-5 sm:mb-6 leading-relaxed font-medium drop-shadow-sm"
+              className="text-foreground text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl max-w-full sm:max-w-lg lg:max-w-xl mb-5 sm:mb-6 leading-relaxed font-medium drop-shadow-sm"
+              style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}
             >
               {profile?.short_intro || "Passionate about building innovative solutions and exploring the frontiers of technology. Currently pursuing Computer Science with a focus on Machine Learning and Software Development."}
             </motion.p>
@@ -112,7 +115,8 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 md:gap-4 justify-center lg:justify-start max-w-full w-full"
+              className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-3 md:gap-4 justify-center lg:justify-start w-full"
+              style={{ maxWidth: '100%' }}
             >
               {profile?.cv_url ? (
                 <Button variant="hero" size="lg" className="w-full sm:w-auto text-sm sm:text-base" asChild>
@@ -170,7 +174,7 @@ const HeroSection = () => {
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl scale-110" />
               
               {/* Image Container */}
-              <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-2 sm:border-4 border-primary/30 glow-teal">
+              <div className="relative w-48 h-48 xs:w-56 xs:h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-2 sm:border-4 border-primary/30 glow-teal">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
                 {!isLoading && profile?.profile_photo_url && (
                   <img
@@ -193,11 +197,11 @@ const HeroSection = () => {
               <motion.div
                 animate={{ y: [-5, 5, -5] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-4 -right-4 bg-card border border-border rounded-xl px-4 py-2 shadow-lg"
+                className="absolute -bottom-2 -right-2 sm:-bottom-4 sm:-right-4 bg-card border border-border rounded-xl px-2 py-1 sm:px-4 sm:py-2 shadow-lg"
               >
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium">{profile?.availability_text || "Open to work"}</span>
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse" />
+                  <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{profile?.availability_text || "Open to work"}</span>
                 </div>
               </motion.div>
             </div>

@@ -113,6 +113,8 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
   }
 
   body {
@@ -120,10 +122,24 @@
     font-family: 'Inter', sans-serif;
     background-image: var(--gradient-mesh);
     background-attachment: fixed;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
   }
 
   ::selection {
     @apply bg-primary/30 text-foreground;
+  }
+  
+  /* Prevent any element from causing overflow */
+  * {
+    box-sizing: border-box;
+  }
+  
+  /* Ensure all direct children respect container bounds */
+  body > *, #root, #root > * {
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 }
 
@@ -206,10 +222,12 @@
     -webkit-mask-composite: xor;
   }
 
-  /* Interactive Tech Badge */
+  /* Tech Badge */
   .tech-badge {
-    @apply px-3 py-1.5 text-xs rounded-lg bg-secondary/80 text-muted-foreground font-mono
+    @apply px-2 py-1 sm:px-3 sm:py-1.5 text-xs rounded-lg bg-secondary/80 text-muted-foreground font-mono
            transition-all duration-300 cursor-default border border-transparent;
+    max-width: 100%;
+    word-break: break-word;
   }
 
   .tech-badge:hover {
@@ -245,12 +263,21 @@
 
   .container-custom {
     @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 640px) {
+    .container-custom {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
   }
 
   /* Logo Icon Styles */
   .tech-logo {
-    @apply w-12 h-12 md:w-14 md:h-14 p-2.5 rounded-xl bg-secondary/50 border border-border/50
-           transition-all duration-300 flex items-center justify-center;
+    @apply w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 p-2 sm:p-2.5 rounded-xl bg-secondary/50 border border-border/50
+           transition-all duration-300 flex items-center justify-center flex-shrink-0;
   }
 
   .tech-logo:hover {
@@ -278,6 +305,19 @@
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-primary/60;
+  }
+
+  /* Mobile-First Text Utilities */
+  .text-mobile-safe {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* Ensure no element causes horizontal overflow */
+  .no-overflow {
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   /* Animation Classes */
@@ -459,4 +499,50 @@
 
 .animate-shimmer {
   animation: shimmer 2.5s infinite;
+}
+
+/* Additional mobile utilities */
+@media (max-width: 640px) {
+  /* Reduce animations on mobile for performance */
+  .mobile-reduce-motion {
+    animation-duration: 0.5s !important;
+  }
+  
+  /* Ensure all sections have proper mobile padding */
+  section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Prevent text from being too large on small screens */
+  h1 {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+  
+  h2 {
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+  }
+  
+  /* Ensure images don't overflow */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* For very small phones (320px and below) */
+@media (max-width: 360px) {
+  .container-custom {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Further reduce font sizes on very small screens */
+  h1 {
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+  }
+  
+  h2 {
+    font-size: clamp(1.125rem, 3.5vw, 1.5rem);
+  }
 }
