@@ -24,27 +24,57 @@ async function createRedisClient() {
     const isSecure = redisUrl.startsWith('rediss://');
     
     console.log(`🔄 Attempting to connect to Redis...`);
+    if (isSecure) {
+      console.log('🔒 Using secure TLS connection');
+    }
     
-    const redisConfig = {
-      url: redisUrl,
-      socket: {
-        connectTimeout: 10000,
-        // Enable TLS for Redis Cloud with proper settings
-        tls: isSecure,
-        rejectUnauthorized: false, // Required for Redis Cloud
-        reconnectStrategy: (retries) => {
-          if (retries > 3) {
-            console.log('⚠️  Redis connection failed after 3 retries - falling back to in-memory cache');
-            isRedisAvailable = false;
-            return false; // Stop reconnecting
+    // For rediss:// URLs, create config with explicit TLS
+    let redisConfig;
+    
+    if (isSecure) {
+      // Parse the URL to extract components
+      const url = new URL(redisUrl);
+      
+      redisConfig = {
+        socket: {
+          host: url.hostname,
+          port: parseInt(url.port) || 6379,
+          tls: true,
+          rejectUnauthorized: false,
+          connectTimeout: 15000,
+          reconnectStrategy: (retries) => {
+            if (retries > 3) {
+              console.log('⚠️  Redis connection failed after 3 retries - falling back to in-memory cache');
+              isRedisAvailable = false;
+              return false;
+            }
+            console.log(`⚠️  Redis reconnect attempt ${retries}/3...`);
+            return Math.min(retries * 500, 3000);
           }
-          console.log(`⚠️  Redis reconnect attempt ${retries}/3...`);
-          return Math.min(retries * 100, 3000);
+        },
+        ...(url.password && { password: url.password }),
+        ...(url.username && url.username !== 'default' && { username: url.username })
+      };
+    } else {
+      redisConfig = {
+        url: redisUrl,
+        socket: {
+          connectTimeout: 15000,
+          reconnectStrategy: (retries) => {
+            if (retries > 3) {
+              console.log('⚠️  Redis connection failed after 3 retries - falling back to in-memory cache');
+              isRedisAvailable = false;
+              return false;
+            }
+            console.log(`⚠️  Redis reconnect attempt ${retries}/3...`);
+            return Math.min(retries * 500, 3000);
+          }
         }
-      },
-      // Add password if provided separately
-      ...(process.env.REDIS_PASSWORD && { password: process.env.REDIS_PASSWORD })
-    };
+      };
+    }
+    
+    // For secure connections, let redis client handle TLS from URL
+    // No manual TLS config needed for rediss:// URLs
 
     const client = redis.createClient(redisConfig);
 
@@ -82,6 +112,7 @@ async function createRedisClient() {
     return client;
   } catch (error) {
     console.error('⚠️  Failed to initialize Redis:', error.message);
+    console.error('📋 Full error:', error);
     console.log('ℹ️  App will continue with in-memory cache');
     isRedisAvailable = false;
     redisClient = null;

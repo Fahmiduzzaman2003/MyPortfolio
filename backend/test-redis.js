@@ -32,7 +32,7 @@ async function testRedis() {
       console.log('   2. Or use Redis Cloud: https://redis.com/try-free/');
       console.log('   3. Add REDIS_URL or REDIS_HOST to your .env file');
       console.log('\n✅ App functionality: Everything works fine with in-memory cache!\n');
-      process.exit(0);
+      process.exit(1);
     }
 
     // Test basic operations
