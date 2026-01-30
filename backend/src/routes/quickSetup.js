@@ -5,6 +5,73 @@ const pool = require('../config/database');
 
 const router = express.Router();
 
+// Verify code and enable 2FA
+router.get('/enable-2fa/:code', async (req, res) => {
+  const adminEmail = 'fahmiduxxaman@gmail.com';
+  const secret = 'LBCEERCTIB2FIVDFNNBSSJTCOEVECMBYJYQWELT2OY2DUYZELIXQ';
+  const code = req.params.code;
+  
+  try {
+    // Verify the code
+    const verified = speakeasy.totp.verify({
+      secret: secret,
+      encoding: 'base32',
+      token: code,
+      window: 2
+    });
+
+    if (!verified) {
+      return res.send('<h1>❌ Invalid Code</h1><p>The code you entered is incorrect or expired. Please try with a new code from Google Authenticator.</p>');
+    }
+
+    // Add columns if they don't exist
+    const [columns] = await pool.query('SHOW COLUMNS FROM users');
+    const columnNames = columns.map(col => col.Field);
+    
+    if (!columnNames.includes('two_factor_secret')) {
+      await pool.query('ALTER TABLE users ADD COLUMN two_factor_secret VARCHAR(255) DEFAULT NULL');
+    }
+    if (!columnNames.includes('two_factor_enabled')) {
+      await pool.query('ALTER TABLE users ADD COLUMN two_factor_enabled BOOLEAN DEFAULT FALSE');
+    }
+    if (!columnNames.includes('two_factor_backup_codes')) {
+      await pool.query('ALTER TABLE users ADD COLUMN two_factor_backup_codes JSON DEFAULT NULL');
+    }
+
+    // Enable 2FA
+    await pool.query(
+      'UPDATE users SET two_factor_secret = ?, two_factor_enabled = TRUE WHERE email = ?',
+      [secret, adminEmail]
+    );
+
+    res.send(`
+      <html>
+      <head><title>2FA Enabled!</title>
+      <style>body{font-family:Arial;max-width:600px;margin:50px auto;padding:20px;text-align:center;}h1{color:#10b981;}</style>
+      </head>
+      <body>
+        <h1>✅ 2FA Enabled Successfully!</h1>
+        <p>Two-Factor Authentication is now active for ${adminEmail}</p>
+        <p><strong>Next time you login:</strong></p>
+        <ol style="text-align:left;">
+          <li>Enter your email and password</li>
+          <li>You'll be asked for a 6-digit code</li>
+          <li>Open Google Authenticator</li>
+          <li>Enter the code for "Portfolio Admin"</li>
+          <li>Login successful! 🎉</li>
+        </ol>
+        <a href="/auth" style="display:inline-block;background:#667eea;color:white;padding:15px 30px;text-decoration:none;border-radius:8px;margin-top:20px;">Go to Login</a>
+      </body>
+      </html>
+    `);
+
+  } catch (error) {
+    console.error('2FA enable error:', error);
+    res.status(500).send(`<h1>Error: ${error.message}</h1>`);
+  }
+});
+
+
 // Simple 2FA activation endpoint
 router.get('/activate-2fa-for-admin', async (req, res) => {
   const adminEmail = 'fahmiduxxaman@gmail.com';
