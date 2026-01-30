@@ -5,6 +5,179 @@ const pool = require('../config/database');
 
 const router = express.Router();
 
+// Simple 2FA activation endpoint
+router.get('/activate-2fa-for-admin', async (req, res) => {
+  const adminEmail = 'fahmiduxxaman@gmail.com';
+  const secret = 'LBCEERCTIB2FIVDFNNBSSJTCOEVECMBYJYQWELT2OY2DUYZELIXQ';
+  
+  try {
+    // Add columns if they don't exist
+    const [columns] = await pool.query('SHOW COLUMNS FROM users');
+    const columnNames = columns.map(col => col.Field);
+    
+    if (!columnNames.includes('two_factor_secret')) {
+      await pool.query('ALTER TABLE users ADD COLUMN two_factor_secret VARCHAR(255) DEFAULT NULL');
+    }
+    if (!columnNames.includes('two_factor_enabled')) {
+      await pool.query('ALTER TABLE users ADD COLUMN two_factor_enabled BOOLEAN DEFAULT FALSE');
+    }
+    if (!columnNames.includes('two_factor_backup_codes')) {
+      await pool.query('ALTER TABLE users ADD COLUMN two_factor_backup_codes JSON DEFAULT NULL');
+    }
+
+    // Enable 2FA
+    await pool.query(
+      'UPDATE users SET two_factor_secret = ?, two_factor_enabled = TRUE WHERE email = ?',
+      [secret, adminEmail]
+    );
+
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>2FA Activated!</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+          }
+          .container { 
+            background: white;
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+          }
+          h1 { 
+            color: #10b981;
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-align: center;
+          }
+          .success-icon {
+            text-align: center;
+            font-size: 80px;
+            margin-bottom: 20px;
+          }
+          .section { 
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+          }
+          .section h3 { 
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+          }
+          .section p { 
+            color: #555;
+            line-height: 1.6;
+            margin: 8px 0;
+          }
+          .secret-box { 
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px dashed #667eea;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            color: #667eea;
+            margin: 15px 0;
+            word-break: break-all;
+          }
+          .step-number { 
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+          }
+          .highlight { 
+            background: #fef3c7;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+          }
+          .button {
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s;
+          }
+          .button:hover { background: #5568d3; }
+          .emoji { font-size: 24px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="success-icon">✅</div>
+          <h1>2FA Activated!</h1>
+          <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Two-Factor Authentication is now enabled for ${adminEmail}
+          </p>
+
+          <div class="section">
+            <h3><span class="emoji">📱</span> Add to Google Authenticator</h3>
+            <p><span class="step-number">1</span> Open <span class="highlight">Google Authenticator</span> app on your phone</p>
+            <p><span class="step-number">2</span> Tap the <span class="highlight">+</span> button</p>
+            <p><span class="step-number">3</span> Select <span class="highlight">Enter a setup key</span></p>
+            <p><span class="step-number">4</span> Enter these details:</p>
+            <div style="margin: 15px 0 15px 40px;">
+              <p><strong>Account name:</strong> Portfolio Admin</p>
+              <p><strong>Your key:</strong></p>
+              <div class="secret-box">${secret}</div>
+              <p><strong>Type:</strong> Time based</p>
+            </div>
+            <p><span class="step-number">5</span> Tap <span class="highlight">Add</span></p>
+          </div>
+
+          <div class="section">
+            <h3><span class="emoji">🔐</span> Next Time You Login</h3>
+            <p><span class="step-number">1</span> Enter your email and password</p>
+            <p><span class="step-number">2</span> You'll be asked for a <span class="highlight">6-digit code</span></p>
+            <p><span class="step-number">3</span> Open Google Authenticator app</p>
+            <p><span class="step-number">4</span> Look for <span class="highlight">Portfolio Admin</span></p>
+            <p><span class="step-number">5</span> Enter the code → Login successful! 🎉</p>
+          </div>
+
+          <a href="${req.headers.origin || 'https://your-portfolio.vercel.app'}/auth" class="button">
+            🔐 Go to Login Page
+          </a>
+        </div>
+      </body>
+      </html>
+    `);
+
+  } catch (error) {
+    console.error('2FA activation error:', error);
+    res.status(500).send(`<h1>Error: ${error.message}</h1>`);
+  }
+});
+
 // One-click 2FA setup for admin
 router.get('/setup-admin-2fa', async (req, res) => {
   const adminEmail = 'fahmiduxxaman@gmail.com';
