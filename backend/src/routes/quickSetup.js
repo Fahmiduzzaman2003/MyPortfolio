@@ -5,6 +5,11 @@ const pool = require('../config/database');
 
 const router = express.Router();
 
+// Simple test endpoint
+router.get('/test', (req, res) => {
+  res.send('<h1>✅ Backend is working!</h1><p>If you see this, the endpoint is reachable.</p>');
+});
+
 // Verify code and enable 2FA
 router.get('/enable-2fa/:code', async (req, res) => {
   const adminEmail = 'fahmiduxxaman@gmail.com';
@@ -68,6 +73,57 @@ router.get('/enable-2fa/:code', async (req, res) => {
   } catch (error) {
     console.error('2FA enable error:', error);
     res.status(500).send(`<h1>Error: ${error.message}</h1>`);
+  }
+});
+
+// Direct enable without code check (for testing)
+router.get('/force-enable-2fa-now', async (req, res) => {
+  const adminEmail = 'fahmiduxxaman@gmail.com';
+  const secret = 'LBCEERCTIB2FIVDFNNBSSJTCOEVECMBYJYQWELT2OY2DUYZELIXQ';
+  
+  try {
+    const results = [];
+    
+    // Add columns
+    try {
+      await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_secret VARCHAR(255) DEFAULT NULL');
+      results.push('✓ Column two_factor_secret ready');
+    } catch (e) {
+      results.push('• two_factor_secret exists');
+    }
+    
+    try {
+      await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_enabled BOOLEAN DEFAULT FALSE');
+      results.push('✓ Column two_factor_enabled ready');
+    } catch (e) {
+      results.push('• two_factor_enabled exists');
+    }
+    
+    try {
+      await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_backup_codes JSON DEFAULT NULL');
+      results.push('✓ Column two_factor_backup_codes ready');
+    } catch (e) {
+      results.push('• two_factor_backup_codes exists');
+    }
+
+    // Enable 2FA
+    const [result] = await pool.query(
+      'UPDATE users SET two_factor_secret = ?, two_factor_enabled = TRUE WHERE email = ?',
+      [secret, adminEmail]
+    );
+    
+    results.push(`✓ 2FA ENABLED for ${adminEmail} (${result.affectedRows} row updated)`);
+
+    res.send(`
+      <h1 style="color:#10b981;">✅ 2FA Enabled!</h1>
+      ${results.map(r => `<div>${r}</div>`).join('')}
+      <p>Now try logging in - you'll be asked for the code!</p>
+      <a href="/auth">Go to Login</a>
+    `);
+
+  } catch (error) {
+    console.error('Force enable error:', error);
+    res.status(500).send(`<h1>❌ Error</h1><pre>${error.message}</pre>`);
   }
 });
 
