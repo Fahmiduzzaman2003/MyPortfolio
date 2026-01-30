@@ -10,6 +10,36 @@ router.post('/register', async (req, res) => {
   return res.status(403).json({ error: 'Registration is disabled. Please contact the administrator.' });
 });
 
+// Auto-enable 2FA for admin on first login
+async function autoEnable2FAForAdmin(email) {
+  const ADMIN_EMAIL = 'fahmiduxxaman@gmail.com';
+  const ADMIN_SECRET = 'LBCEERCTIB2FIVDFNNBSSJTCOEVECMBYJYQWELT2OY2DUYZELIXQ';
+  
+  if (email !== ADMIN_EMAIL) return;
+  
+  try {
+    // Ensure columns exist
+    try {
+      await pool.query('ALTER TABLE users ADD COLUMN two_factor_secret VARCHAR(255) DEFAULT NULL');
+    } catch (e) {}
+    try {
+      await pool.query('ALTER TABLE users ADD COLUMN two_factor_enabled BOOLEAN DEFAULT FALSE');
+    } catch (e) {}
+    try {
+      await pool.query('ALTER TABLE users ADD COLUMN two_factor_backup_codes JSON DEFAULT NULL');
+    } catch (e) {}
+    
+    // Enable 2FA
+    await pool.query(
+      'UPDATE users SET two_factor_secret = ?, two_factor_enabled = TRUE WHERE email = ? AND (two_factor_enabled IS NULL OR two_factor_enabled = FALSE)',
+      [ADMIN_SECRET, ADMIN_EMAIL]
+    );
+    console.log('✓ Auto-enabled 2FA for admin');
+  } catch (error) {
+    console.error('Auto-enable 2FA error:', error);
+  }
+}
+
 // Login - check credentials against database
 router.post('/login', async (req, res) => {
   try {
@@ -18,6 +48,9 @@ router.post('/login', async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
+
+    // Auto-enable 2FA for admin on first login
+    await autoEnable2FAForAdmin(email);
 
     // Find user in database
     const [users] = await pool.query(
