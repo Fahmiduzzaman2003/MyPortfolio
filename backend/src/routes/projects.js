@@ -1,11 +1,10 @@
 const express = require('express');
 const pool = require('../config/database');
-const { cacheMiddleware, del } = require('../utils/cache');
 
 const router = express.Router();
 
 // Get all projects (public)
-router.get('/', cacheMiddleware(600), async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const [projects] = await pool.query(
       'SELECT * FROM projects ORDER BY display_order ASC, created_at DESC'
@@ -25,7 +24,7 @@ router.get('/', cacheMiddleware(600), async (req, res) => {
 });
 
 // Get single project (public)
-router.get('/:id', cacheMiddleware(600), async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const [projects] = await pool.query('SELECT * FROM projects WHERE id = ?', [id]);
@@ -71,9 +70,6 @@ router.post('/', async (req, res) => {
     const project = newProject[0];
     project.tech_stack = Array.isArray(project.tech_stack) ? project.tech_stack : [];
 
-    // Clear projects cache
-    await del('api:/api/projects*');
-
     res.status(201).json(project);
   } catch (error) {
     console.error('Create project error:', error);
@@ -115,9 +111,6 @@ router.put('/:id', async (req, res) => {
     const project = updated[0];
     project.tech_stack = Array.isArray(project.tech_stack) ? project.tech_stack : [];
 
-    // Clear projects cache
-    await del('api:/api/projects*');
-
     res.json(project);
   } catch (error) {
     console.error('Update project error:', error);
@@ -136,9 +129,6 @@ router.delete('/:id', async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Project not found' });
     }
-
-    // Clear projects cache
-    await del('api:/api/projects*');
 
     res.json({ message: 'Project deleted successfully' });
   } catch (error) {
@@ -165,9 +155,6 @@ router.put('/order/:id', async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Project not found' });
     }
-
-    // Clear projects cache
-    await del('api:/api/projects*');
 
     res.json({ message: 'Project display order updated successfully' });
   } catch (error) {

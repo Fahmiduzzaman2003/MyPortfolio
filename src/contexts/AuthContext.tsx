@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authApi } from '@/lib/api';
+import { authApi, twoFactorApi } from '@/lib/api';
 
 interface User {
   id: string | number;
@@ -11,8 +11,8 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAdmin: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null; requiresTwoFactor?: boolean }>;
+  signInWith2FA: (email: string, twoFactorCode: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -38,18 +38,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { user } = await authApi.login(email, password);
-      localStorage.setItem('user_data', JSON.stringify(user));
-      setUser(user);
+      const response = await authApi.login(email, password);
+      
+      if (response.requiresTwoFactor) {
+        // Don't set user yet, wait for 2FA verification
+        return { error: null, requiresTwoFactor: true };
+      }
+      
+      if (response.user) {
+        localStorage.setItem('user_data', JSON.stringify(response.user));
+        setUser(response.user);
+      }
       return { error: null };
     } catch (error) {
       return { error: error as Error };
     }
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signInWith2FA = async (email: string, twoFactorCode: string) => {
     try {
-      const { user } = await authApi.register(email, password);
+      const { user } = await authApi.loginWith2FA(email, twoFactorCode);
       localStorage.setItem('user_data', JSON.stringify(user));
       setUser(user);
       return { error: null };
@@ -71,7 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAdmin = user?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, signIn, signInWith2FA, signOut }}>
       {children}
     </AuthContext.Provider>
   );

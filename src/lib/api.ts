@@ -39,20 +39,57 @@ async function apiRequest<T>(
 // Auth API
 export const authApi = {
   login: (email: string, password: string) =>
-    apiRequest<{ user: any; message: string }>('/auth/login', {
+    apiRequest<{ user?: any; requiresTwoFactor?: boolean; email?: string; message: string }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password })
     }),
 
-  register: (email: string, password: string) =>
-    apiRequest<{ user: any; message: string }>('/auth/register', {
+  loginWith2FA: (email: string, twoFactorCode: string) =>
+    apiRequest<{ user: any; message: string }>('/auth/login-2fa', {
       method: 'POST',
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ email, twoFactorCode })
     }),
+
+  // Registration disabled for security - only admin login allowed
+  // register: (email: string, password: string) =>
+  //   apiRequest<{ user: any; message: string }>('/auth/register', {
+  //     method: 'POST',
+  //     body: JSON.stringify({ email, password })
+  //   }),
 
   logout: () => apiRequest('/auth/logout', { method: 'POST' }),
 
   getMe: () => apiRequest<{ user: any }>('/auth/me')
+};
+
+// Two-Factor Authentication API
+export const twoFactorApi = {
+  setup: (email: string) =>
+    apiRequest<{ secret: string; qrCode: string; message: string }>('/2fa/setup', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    }),
+
+  verify: (email: string, token: string) =>
+    apiRequest<{ message: string; backupCodes: string[] }>('/2fa/verify', {
+      method: 'POST',
+      body: JSON.stringify({ email, token })
+    }),
+
+  validate: (email: string, token: string) =>
+    apiRequest<{ valid: boolean; message: string; remainingBackupCodes?: number }>('/2fa/validate', {
+      method: 'POST',
+      body: JSON.stringify({ email, token })
+    }),
+
+  checkStatus: (email: string) =>
+    apiRequest<{ enabled: boolean }>(`/2fa/status/${email}`),
+
+  disable: (email: string, password: string) =>
+    apiRequest<{ message: string }>('/2fa/disable', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    })
 };
 
 // Profile API

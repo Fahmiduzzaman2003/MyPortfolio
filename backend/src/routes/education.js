@@ -1,11 +1,10 @@
 const express = require('express');
 const pool = require('../config/database');
-const { cacheMiddleware, del } = require('../utils/cache');
 
 const router = express.Router();
 
 // Get all education entries (public)
-router.get('/', cacheMiddleware(600), async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const [education] = await pool.query(
       'SELECT * FROM education ORDER BY display_order ASC, created_at DESC'
@@ -18,7 +17,7 @@ router.get('/', cacheMiddleware(600), async (req, res) => {
 });
 
 // Get single education entry (public)
-router.get('/:id', cacheMiddleware(600), async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const [education] = await pool.query('SELECT * FROM education WHERE id = ?', [id]);
@@ -49,10 +48,6 @@ router.post('/', async (req, res) => {
     );
 
     const [newEducation] = await pool.query('SELECT * FROM education WHERE id = ?', [result.insertId]);
-    
-    // Clear education cache
-    await del('api:/api/education*');
-    
     res.status(201).json(newEducation[0]);
   } catch (error) {
     console.error('Create education error:', error);
@@ -81,10 +76,6 @@ router.put('/:id', async (req, res) => {
     }
 
     const [updated] = await pool.query('SELECT * FROM education WHERE id = ?', [id]);
-    
-    // Clear education cache
-    await del('api:/api/education*');
-    
     res.json(updated[0]);
   } catch (error) {
     console.error('Update education error:', error);
@@ -102,9 +93,6 @@ router.delete('/:id', async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Education entry not found' });
     }
-
-    // Clear education cache
-    await del('api:/api/education*');
 
     res.json({ message: 'Education entry deleted successfully' });
   } catch (error) {
@@ -131,9 +119,6 @@ router.put('/order/:id', async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Education entry not found' });
     }
-
-    // Clear education cache
-    await del('api:/api/education*');
 
     res.json({ message: 'Display order updated successfully' });
   } catch (error) {

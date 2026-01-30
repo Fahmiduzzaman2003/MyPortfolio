@@ -18,6 +18,7 @@ import {
   Briefcase,
   Contact,
   Users,
+  Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,6 +37,7 @@ import AdminCodingPlatforms from "@/components/admin/AdminCodingPlatforms";
 import AdminCoCurricular from "@/components/admin/AdminCoCurricular";
 import AdminExperience from "@/components/admin/AdminExperience";
 import AdminContactInfo from "@/components/admin/AdminContactInfo";
+import SecuritySettings from "@/pages/SecuritySettings";
 
 const menuItems = [
   { id: "profile", label: "Profile", icon: User },
@@ -50,6 +52,7 @@ const menuItems = [
   { id: "contact", label: "Contact Info", icon: Contact },
   { id: "cv", label: "CV / Resume", icon: FileText },
   { id: "messages", label: "Messages", icon: MessageSquare },
+  { id: "security", label: "Security", icon: Shield },
 ];
 
 const Admin = () => {
@@ -117,6 +120,8 @@ const Admin = () => {
         return <AdminCV />;
       case "messages":
         return <AdminMessages />;
+      case "security":
+        return <SecuritySettings />;
       default:
         return <AdminProfile />;
     }

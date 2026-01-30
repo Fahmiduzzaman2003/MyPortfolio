@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Terminal, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Terminal, Mail, Lock, Eye, EyeOff, ArrowRight, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,12 +14,13 @@ const authSchema = z.object({
 });
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [twoFactorCode, setTwoFactorCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, signUp, user, isAdmin } = useAuth();
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
+  const { signIn, signInWith2FA, user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,34 +34,39 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      authSchema.parse({ email, password });
+      if (requiresTwoFactor) {
+        // Verify 2FA code
+        if (twoFactorCode.length !== 6) {
+          toast.error("Please enter a valid 6-digit code");
+          setIsLoading(false);
+          return;
+        }
+
+        const { error } = await signInWith2FA(email, twoFactorCode);
+        if (error) {
+          toast.error(error.message);
+        } else {
+          toast.success("Logged in successfully!");
+          navigate("/admin");
+        }
+      } else {
+        // Initial login with email and password
+        authSchema.parse({ email, password });
+        const { error, requiresTwoFactor: needs2FA } = await signIn(email, password);
+        
+        if (error) {
+          toast.error(error.message);
+        } else if (needs2FA) {
+          setRequiresTwoFactor(true);
+          toast.info("Please enter your 2FA code");
+        } else {
+          toast.success("Logged in successfully!");
+          navigate("/admin");
+        }
+      }
     } catch (err) {
       if (err instanceof z.ZodError) {
         toast.error(err.errors[0].message);
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    if (isLogin) {
-      const { error } = await signIn(email, password);
-      if (error) {
-        toast.error(error.message);
-      } else {
-        toast.success("Logged in successfully!");
-        navigate("/admin");
-      }
-    } else {
-      const { error } = await signUp(email, password);
-      if (error) {
-        if (error.message.includes("already registered")) {
-          toast.error("This email is already registered. Please login instead.");
-        } else {
-          toast.error(error.message);
-        }
-      } else {
-        toast.success("Account created! You can now login.");
-        setIsLogin(true);
       }
     }
     setIsLoading(false);
@@ -91,46 +97,64 @@ const Auth = () => {
 
           {/* Title */}
           <h1 className="text-2xl font-bold text-center mb-2">
-            {isLogin ? "Welcome Back" : "Create Account"}
+            {requiresTwoFactor ? "Two-Factor Authentication" : "Welcome Back"}
           </h1>
           <p className="text-muted-foreground text-center mb-8">
-            {isLogin
-              ? "Sign in to access the admin panel"
-              : "Create an admin account"}
+            {requiresTwoFactor
+              ? "Enter the code from your authenticator app"
+              : "Sign in to access the admin panel"}
           </p>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 h-12 bg-secondary/50 border-border"
-                required
-              />
-            </div>
+            {!requiresTwoFactor ? (
+              <>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    type="email"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-10 h-12 bg-secondary/50 border-border"
+                    required
+                  />
+                </div>
 
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 pr-10 h-12 bg-secondary/50 border-border"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-10 pr-10 h-12 bg-secondary/50 border-border"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="relative">
+                <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
+                <Input
+                  type="text"
+                  placeholder="000000"
+                  value={twoFactorCode}
+                  onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  className="pl-10 h-12 bg-secondary/50 border-border text-center text-2xl tracking-widest"
+                  maxLength={6}
+                  autoFocus
+                  required
+                />
+              </div>
+            )}
 
             <Button
               type="submit"
@@ -139,25 +163,26 @@ const Auth = () => {
               className="w-full"
               disabled={isLoading}
             >
-              {isLoading ? "Loading..." : isLogin ? "Sign In" : "Create Account"}
+              {isLoading ? "Loading..." : requiresTwoFactor ? "Verify Code" : "Sign In"}
               <ArrowRight className="w-5 h-5" />
             </Button>
           </form>
 
-          {/* Toggle */}
-          <div className="mt-6 text-center">
-            <span className="text-muted-foreground">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
-            </span>
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="ml-2 text-primary hover:underline font-medium"
-            >
-              {isLogin ? "Sign Up" : "Sign In"}
-            </button>
-          </div>
+          {requiresTwoFactor && (
+            <div className="mt-4 text-center">
+              <button
+                onClick={() => {
+                  setRequiresTwoFactor(false);
+                  setTwoFactorCode("");
+                }}
+                className="text-sm text-muted-foreground hover:text-primary"
+              >
+                ← Back to login
+              </button>
+            </div>
+          )}
 
-          {/* Back to Home */}
+          {/* Back to Home */
           <div className="mt-4 text-center">
             <a href="/" className="text-sm text-muted-foreground hover:text-primary">
               ← Back to Portfolio

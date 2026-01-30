@@ -6,6 +6,8 @@ const cors = require('cors');
 const path = require('path');
 
 const authRoutes = require('./routes/auth');
+const twoFactorRoutes = require('./routes/twoFactor');
+const migrationRoutes = require('./routes/migration');
 const profileRoutes = require('./routes/profile');
 const educationRoutes = require('./routes/education');
 const skillsRoutes = require('./routes/skills');
@@ -55,6 +57,8 @@ app.use('/uploads', (req, res, next) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/2fa', twoFactorRoutes);
+app.use('/api/migration', migrationRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/education', educationRoutes);
 app.use('/api/skills', skillsRoutes);

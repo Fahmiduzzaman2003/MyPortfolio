@@ -1,11 +1,10 @@
 const express = require('express');
 const pool = require('../config/database');
-const { cacheMiddleware, del } = require('../utils/cache');
 
 const router = express.Router();
 
 // Get all achievements (public)
-router.get('/', cacheMiddleware(600), async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const [achievements] = await pool.query(
       'SELECT * FROM achievements ORDER BY display_order ASC, year DESC, created_at DESC'
@@ -18,7 +17,7 @@ router.get('/', cacheMiddleware(600), async (req, res) => {
 });
 
 // Get single achievement (public)
-router.get('/:id', cacheMiddleware(600), async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const [achievements] = await pool.query('SELECT * FROM achievements WHERE id = ?', [id]);
@@ -60,10 +59,6 @@ router.post('/', async (req, res) => {
     );
 
     const [newAchievement] = await pool.query('SELECT * FROM achievements WHERE id = ?', [result.insertId]);
-    
-    // Clear achievements cache
-    await del('api:/api/achievements*');
-    
     res.status(201).json(newAchievement[0]);
   } catch (error) {
     console.error('Create achievement error:', error);
@@ -104,10 +99,6 @@ router.put('/:id', async (req, res) => {
     }
 
     const [updated] = await pool.query('SELECT * FROM achievements WHERE id = ?', [id]);
-    
-    // Clear achievements cache
-    await del('api:/api/achievements*');
-    
     res.json(updated[0]);
   } catch (error) {
     console.error('Update achievement error:', error);
@@ -125,9 +116,6 @@ router.delete('/:id', async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Achievement not found' });
     }
-
-    // Clear achievements cache
-    await del('api:/api/achievements*');
 
     res.json({ message: 'Achievement deleted successfully' });
   } catch (error) {

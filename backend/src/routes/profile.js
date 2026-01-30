@@ -1,11 +1,10 @@
 const express = require('express');
 const pool = require('../config/database');
-const { cacheMiddleware, del } = require('../utils/cache');
 
 const router = express.Router();
 
 // Get profile
-router.get('/', cacheMiddleware(600), async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const [profiles] = await pool.query('SELECT * FROM profiles LIMIT 1');
 
