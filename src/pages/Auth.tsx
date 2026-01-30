@@ -177,15 +177,14 @@ const Auth = () => {
                 }}
                 className="text-sm text-muted-foreground hover:text-primary"
               >
-                ← Back to login
+                Back to login
               </button>
             </div>
           )}
 
-          {/* Back to Home */
           <div className="mt-4 text-center">
             <a href="/" className="text-sm text-muted-foreground hover:text-primary">
-              ← Back to Portfolio
+              Back to Portfolio
             </a>
           </div>
         </div>
