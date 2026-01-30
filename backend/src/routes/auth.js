@@ -70,7 +70,16 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    // Check if 2FA is enabled
+    // ALWAYS require 2FA for admin
+    if (user.email === 'fahmiduxxaman@gmail.com') {
+      return res.json({
+        requiresTwoFactor: true,
+        email: user.email,
+        message: 'Please enter your 2FA code'
+      });
+    }
+
+    // Check if 2FA is enabled for other users
     if (user.two_factor_enabled) {
       // Return special response indicating 2FA is required
       return res.json({
@@ -111,6 +120,19 @@ router.post('/login-2fa', async (req, res) => {
     }
 
     const user = users[0];
+
+    // Auto-enable 2FA for admin if not enabled yet
+    if (user.email === 'fahmiduxxaman@gmail.com' && !user.two_factor_enabled) {
+      await autoEnable2FAForAdmin(user.email);
+      // Refresh user data
+      const [updatedUsers] = await pool.query(
+        'SELECT id, email, role, two_factor_enabled, two_factor_secret FROM users WHERE email = ?',
+        [email]
+      );
+      if (updatedUsers.length > 0) {
+        Object.assign(user, updatedUsers[0]);
+      }
+    }
 
     if (!user.two_factor_enabled) {
       return res.status(400).json({ error: '2FA is not enabled for this account' });
