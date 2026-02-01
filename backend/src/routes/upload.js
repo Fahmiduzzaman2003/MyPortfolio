@@ -58,7 +58,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage,
+  storage: memoryStorage, // Use memory storage for Cloudinary uploads
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit
     files: 1 // Only one file at a time
